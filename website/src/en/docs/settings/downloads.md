@@ -12,6 +12,8 @@ Download settings manage the storage location, queue, and network behavior for o
 Choose a stable location with sufficient free space before starting large downloads.
 Do not remove the storage medium, revoke file access, or clear app data while downloads are in progress.
 
+For folder selection, directory layout, and migration guidance, see the [Storage guide](/en/docs/settings/storage).
+
 ## Queue and network
 
 Downloads enter a queue and run according to the current network conditions.

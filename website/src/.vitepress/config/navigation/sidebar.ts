@@ -26,6 +26,7 @@ export function createSidebar(locale: 'zh' | 'en'): DefaultTheme.SidebarMulti {
         { text: isChinese ? '书架' : 'Library', link: `${prefix}/docs/settings/library` },
         { text: isChinese ? '漫画阅读器' : 'Manga reader', link: `${prefix}/docs/settings/manga-reader` },
         { text: isChinese ? '书籍阅读器' : 'Book reader', link: `${prefix}/docs/settings/book-reader` },
+        { text: isChinese ? '存储指南' : 'Storage guide', link: `${prefix}/docs/settings/storage` },
         { text: isChinese ? '下载' : 'Downloads', link: `${prefix}/docs/settings/downloads` },
         { text: isChinese ? '其他设置' : 'Other settings', link: `${prefix}/docs/settings/other` },
       ],

@@ -44,6 +44,7 @@ GitHub Pages 部署工作流和发布配置已经移除。
 | 漫画阅读器 | `/zh/docs/settings/manga-reader` | `/en/docs/settings/manga-reader` |
 | 书籍阅读器 | `/zh/docs/settings/book-reader` | `/en/docs/settings/book-reader` |
 | 下载设置 | `/zh/docs/settings/downloads` | `/en/docs/settings/downloads` |
+| 存储指南 | `/zh/docs/settings/storage` | `/en/docs/settings/storage` |
 | 其他设置 | `/zh/docs/settings/other` | `/en/docs/settings/other` |
 | 常见问题 | `/zh/docs/faq/general` | `/en/docs/faq/general` |
 | 故障排查 | `/zh/docs/guides/troubleshooting/` | `/en/docs/guides/troubleshooting/` |
