@@ -1,43 +1,35 @@
 <script setup lang="ts">
+import { useData } from 'vitepress'
 import { computed, ref, toRefs } from 'vue'
 
 const props = defineProps<{ body: string, author: string, tag: string }>()
-const { body, author, tag } = toRefs(props)
-
-function isHigherThan(tagName: string, reference: string) {
-  return reference.localeCompare(tagName, undefined, { numeric: true, sensitivity: 'base' }) >= 0
-}
-
-const notMentioned = computed(() => {
-  return isHigherThan('v0.16.0', tag.value) ? ['AntsyLich'] : []
-})
+const { body, author } = toRefs(props)
+const { lang } = useData()
 
 const nonExistent = ref<string[]>([])
 
 const contributors = computed(() => {
   const list = [...body.value.matchAll(/(?<=\(|(, ))@(.*?)(?=\)|(, ))/g)]
     .map(match => match[2])
-  const uncredited = author.value.includes('[bot]')
-    ? notMentioned.value
-    : [author.value, ...notMentioned.value]
+  const uncredited = author.value.includes('[bot]') ? [] : [author.value]
 
   return [...new Set([...uncredited, ...list])]
-    .filter(user => user !== 'mihon-bot')
+    .filter(user => !user.endsWith('[bot]'))
     .filter(user => !nonExistent.value.includes(user))
 })
 
-const listFormatter = new Intl.ListFormat('en', {
+const listFormatter = computed(() => new Intl.ListFormat(lang.value.startsWith('zh') ? 'zh-CN' : 'en', {
   style: 'long',
   type: 'conjunction',
-})
+}))
 
 const contributorsText = computed(() => {
   if (contributors.value.length <= 3)
-    return listFormatter.format(contributors.value)
+    return listFormatter.value.format(contributors.value)
 
-  return listFormatter.format([
+  return listFormatter.value.format([
     ...contributors.value.slice(0, 2),
-    `${contributors.value.length - 2} other contributors`,
+    lang.value.startsWith('zh') ? `另 ${contributors.value.length - 2} 位贡献者` : `${contributors.value.length - 2} other contributors`,
   ])
 })
 
@@ -49,7 +41,7 @@ function addToNonExistent(user: string) {
 
 <template>
   <div v-if="contributors.length > 0" class="contributors">
-    <h3>Contributors</h3>
+    <h3>{{ lang.startsWith('zh') ? '贡献者' : 'Contributors' }}</h3>
     <ul>
       <li
         v-for="contributor of contributors"

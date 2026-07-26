@@ -1,19 +1,16 @@
 <script setup lang="ts">
-import type { AppRelease } from '../data/release.data'
 import moment from 'moment'
-import { computed, onMounted, ref, toRefs } from 'vue'
-import { data as release } from '../data/release.data'
+import { useData } from 'vitepress'
+import { computed, onMounted, ref } from 'vue'
+import { data as releaseData } from '../data/release.data'
 
-const props = defineProps<{ type: keyof AppRelease }>()
-const { type } = toRefs(props)
-
+const { lang } = useData()
+const isChinese = computed(() => lang.value.startsWith('zh'))
 const momentInfo = computed(() => ({
-  relative: moment(release[type.value].published_at).fromNow(),
-  exact: moment(release[type.value].published_at).format('dddd, MMMM Do YYYY [at] HH:mm'),
-  iso: release[type.value].published_at ?? undefined,
+  relative: moment(releaseData.release.published_at).fromNow(),
+  exact: moment(releaseData.release.published_at).format('LLLL'),
+  iso: releaseData.release.published_at ?? undefined,
 }))
-
-// Mimic the <ClientOnly /> behavior to show custom text while rendering.
 const show = ref(false)
 
 onMounted(() => {
@@ -22,10 +19,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <time v-if="show" :datetime="momentInfo.iso" :title="momentInfo.exact">
-    {{ momentInfo.relative }}
-  </time>
-  <time v-else :datetime="momentInfo.iso">
-    {{ momentInfo.exact }}
+  <a v-if="releaseData.isFallback" :href="releaseData.release.html_url">
+    {{ isChinese ? 'GitHub Releases' : 'GitHub Releases' }}
+  </a>
+  <time v-else :datetime="momentInfo.iso" :title="momentInfo.exact">
+    {{ show ? momentInfo.relative : momentInfo.exact }}
   </time>
 </template>

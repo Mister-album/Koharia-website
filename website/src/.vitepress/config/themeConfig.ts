@@ -1,78 +1,45 @@
 import type { DefaultTheme } from 'vitepress'
 
-import nav from './navigation/navbar'
-import sidebar from './navigation/sidebar'
+import { createNav } from './navigation/navbar'
+import { createSidebar } from './navigation/sidebar'
 
-const themeConfig: DefaultTheme.Config = {
-  logo: {
-    src: '/img/logo-128px.png',
-    width: 24,
-    height: 24,
-  },
+export function createThemeConfig(locale: 'zh' | 'en'): DefaultTheme.Config {
+  const isChinese = locale === 'zh'
+  const prefix = `/${locale}`
 
-  nav,
-  sidebar,
-
-  outline: [2, 3],
-
-  socialLinks: [
-    {
-      icon: 'github',
-      link: 'https://github.com/mihonapp/mihon',
-      ariaLabel: 'Project GitHub',
+  return {
+    logo: {
+      src: '/img/koharia-logo.png',
+      width: 32,
+      height: 32,
     },
-    {
-      icon: 'discord',
-      link: 'https://discord.gg/mihon',
-      ariaLabel: 'Discord Server',
-    },
-    {
-      icon: 'x',
-      link: 'https://x.com/mihonapp',
-      ariaLabel: 'X Page',
-    },
-    {
-      icon: 'facebook',
-      link: 'https://facebook.com/mihonapp',
-      ariaLabel: 'Facebook Page',
-    },
-    {
-      icon: {
-        svg: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0zm5.01 4.744c.688 0 1.25.561 1.25 1.249a1.25 1.25 0 0 1-2.498.056l-2.597-.547-.8 3.747c1.824.07 3.48.632 4.674 1.488.308-.309.73-.491 1.207-.491.968 0 1.754.786 1.754 1.754 0 .716-.435 1.333-1.01 1.614a3.111 3.111 0 0 1 .042.52c0 2.694-3.13 4.87-7.004 4.87-3.874 0-7.004-2.176-7.004-4.87 0-.183.015-.366.043-.534A1.748 1.748 0 0 1 4.028 12c0-.968.786-1.754 1.754-1.754.463 0 .898.196 1.207.49 1.207-.883 2.878-1.43 4.744-1.487l.885-4.182a.342.342 0 0 1 .14-.197.35.35 0 0 1 .238-.042l2.906.617a1.214 1.214 0 0 1 1.108-.701zM9.25 12C8.561 12 8 12.562 8 13.25c0 .687.561 1.248 1.25 1.248.687 0 1.248-.561 1.248-1.249 0-.688-.561-1.249-1.249-1.249zm5.5 0c-.687 0-1.248.561-1.248 1.25 0 .687.561 1.248 1.249 1.248.688 0 1.249-.561 1.249-1.249 0-.687-.562-1.249-1.25-1.249zm-5.466 3.99a.327.327 0 0 0-.231.094.33.33 0 0 0 0 .463c.842.842 2.484.913 2.961.913.477 0 2.105-.056 2.961-.913a.361.361 0 0 0 .029-.463.33.33 0 0 0-.464 0c-.547.533-1.684.73-2.512.73-.828 0-1.979-.196-2.512-.73a.326.326 0 0 0-.232-.095z"/></svg>',
+    nav: createNav(locale),
+    sidebar: createSidebar(locale),
+    outline: [2, 3],
+    socialLinks: [
+      {
+        icon: 'github',
+        link: 'https://github.com/Mister-album/Koharia',
+        ariaLabel: 'Koharia on GitHub',
       },
-      link: 'https://reddit.com/r/mihonapp',
-      ariaLabel: 'Support subreddit',
+      {
+        icon: {
+          svg: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.317 4.37a19.8 19.8 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.3 18.3 0 0 0-5.487 0a13 13 0 0 0-.617-1.25a.08.08 0 0 0-.079-.037A19.7 19.7 0 0 0 3.677 4.37a.1.1 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.08.08 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.08.08 0 0 0 .084-.028a14 14 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13 13 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10 10 0 0 0 .372-.292a.07.07 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.07.07 0 0 1 .078.01q.181.149.373.292a.077.077 0 0 1-.006.127a12.3 12.3 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.08.08 0 0 0 .084.028a19.8 19.8 0 0 0 6.002-3.03a.08.08 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.06.06 0 0 0-.031-.03M8.02 15.33c-1.182 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418m7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418"/></svg>',
+        },
+        link: 'https://discord.gg/komga-678794935368941569',
+        ariaLabel: 'Koharia on Discord',
+      },
+    ],
+    footer: {
+      message: `<a href="${prefix}/privacy/">${isChinese ? '隐私政策' : 'Privacy policy'}</a> <span class="divider">|</span> <a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank" rel="noopener">Apache-2.0</a>`,
+      copyright: `Copyright © ${new Date().getFullYear()} Koharia contributors`,
     },
-    // { icon: "instagram", link: "https://instagram.com/mihonapp", ariaLabel: "Instagram Page" },
-  ],
-
-  footer: {
-    message: '<a href="https://www.apache.org/licenses/LICENSE-2.0" target="_blank">Open-source Apache Licensed</a> <span class="divider">|</span> <a href="/privacy/">Privacy policy</a>',
-    copyright: `Copyright © ${new Date().getFullYear()} Mihon App`,
-  },
-
-  editLink: {
-    pattern: 'https://github.com/mihonapp/website/edit/main/website/src/:path',
-    text: 'Help us improve this page',
-  },
-
-  lastUpdated: {
-    text: 'Last updated',
-    formatOptions: {
-      forceLocale: true,
-      dateStyle: 'long',
-      timeStyle: 'short',
+    editLink: {
+      pattern: 'https://github.com/Mister-album/Koharia-website/edit/main/website/src/:path',
+      text: isChinese ? '帮助改进此页面' : 'Edit this page on GitHub',
     },
-  },
-
-  search: {
-    provider: 'algolia',
-    options: {
-      appId: 'IXX45N1P5C',
-      apiKey: 'a7a819b0bd88bc7333c7f42d611ec04e',
-      indexName: 'mihon',
+    lastUpdated: {
+      text: isChinese ? '最后更新' : 'Last updated',
     },
-  },
+  }
 }
-
-export default themeConfig

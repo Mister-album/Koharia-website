@@ -1,52 +1,43 @@
 <script setup lang="ts">
 import MarkdownIt from 'markdown-it'
-import { data as changelogs } from '../data/changelogs.data'
+import { useData } from 'vitepress'
+import { computed } from 'vue'
+import { data as changelogData } from '../data/changelogs.data'
 import { formatChangelog } from '../utils/formatChangelog'
 import Contributors from './Contributors.vue'
 
+const { lang } = useData()
+const isChinese = computed(() => lang.value.startsWith('zh'))
+const changelogs = changelogData.releases
+const prefix = computed(() => isChinese.value ? '/zh' : '/en')
 const md = new MarkdownIt({ html: true })
+const dateFormatter = computed(() => new Intl.DateTimeFormat(isChinese.value ? 'zh-CN' : 'en', { dateStyle: 'medium' }))
 
-function renderMarkdown(string: string | null | undefined) {
-  const pre = (string ?? '').replace(
-    'Check out the [past release notes](https://github.com/mihonapp/mihon/releases) if you’re upgrading from an earlier version. ',
-    '',
-  )
-  return formatChangelog(md, pre, { stripChecksums: true })
+function renderMarkdown(body: string | null | undefined) {
+  return formatChangelog(md, body, { stripChecksums: true })
 }
-
-const dateFormatter = new Intl.DateTimeFormat('en', {
-  dateStyle: 'medium',
-})
 </script>
 
 <template>
-  <div
-    v-for="(release, index) of changelogs"
-    :key="release.tag_name"
-  >
-    <h2 :id="index === 0 ? 'latest' : release.tag_name">
-      <a
-        :href="`/changelogs/${release.tag_name}`"
-      >
-        {{ release.tag_name.substring(1) }}
-      </a>
-      <Badge v-if="index === 0" type="tip" text="Latest" />
-      <a
-        class="header-anchor"
-        :href="index === 0 ? '#latest' : `#${release.tag_name}`"
-        :aria-label="`Permalink to &quot;${release.tag_name}&quot;`"
-      />
-    </h2>
-    <time :datetime="release.published_at!">
-      {{ dateFormatter.format(new Date(release.published_at!)) }}
-    </time>
-    <div v-html="renderMarkdown(release.body)" />
-    <Contributors
-      :body="release.body!"
-      :author="release.author.login"
-      :tag="release.tag_name"
-    />
+  <div v-if="changelogData.isFallback" class="custom-block warning">
+    <p class="custom-block-title">
+      {{ isChinese ? '发布信息暂不可用' : 'Release information unavailable' }}
+    </p>
+    <p>
+      <a href="https://github.com/Mister-album/Koharia/releases">{{ isChinese ? '在 GitHub Releases 查看正式版本。' : 'View official releases on GitHub Releases.' }}</a>
+    </p>
   </div>
+  <template v-else>
+    <div v-for="(release, index) of changelogs" :key="release.tag_name">
+      <h2 :id="index === 0 ? 'latest' : release.tag_name">
+        <a :href="`${prefix}/changelogs/${release.tag_name}`">{{ release.tag_name }}</a>
+        <Badge v-if="index === 0" type="tip" :text="isChinese ? '最新' : 'Latest'" />
+      </h2>
+      <time :datetime="release.published_at!">{{ dateFormatter.format(new Date(release.published_at!)) }}</time>
+      <div v-html="renderMarkdown(release.body)" />
+      <Contributors :body="release.body!" :author="release.author.login" :tag="release.tag_name" />
+    </div>
+  </template>
 </template>
 
 <style lang="stylus" scoped>

@@ -1,87 +1,53 @@
 <script setup lang="ts">
-/// <reference types="@types/gtag.js" />
-
+import { useData } from 'vitepress'
 import { computed, onMounted, ref } from 'vue'
-import { data as release } from '../data/release.data'
+import { data as releaseData } from '../data/release.data'
 
-const downloadInformation = computed(() => ({
-  beta: {
-    tagName: release.beta.tag_name ?? 'r0000',
-    asset: (release.beta.assets ?? [])
-      .find(a => /^mihon-r\d{4,}.apk/.test(a.name)),
-  },
-  stable: {
-    tagName: release.stable.tag_name ?? 'v0.00.0',
-    asset: (release.stable.assets ?? [])
-      .find(a => /^mihon-v\d+\.\d+\.\d+.apk/.test(a.name)),
-  },
-}))
-
+const { lang } = useData()
+const isChinese = computed(() => lang.value.startsWith('zh'))
 const isAndroid = ref(true)
+const release = computed(() => releaseData.release)
+const universalApk = computed(() => {
+  const tag = release.value.tag_name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+  return release.value.assets.find(asset =>
+    new RegExp(`^Koharia-${tag}-release\\.apk$`, 'i').test(asset.name),
+  )
+})
+const downloadUrl = computed(() => universalApk.value?.browser_download_url ?? release.value.html_url)
 
 onMounted(() => {
-  isAndroid.value = !!navigator.userAgent.match(/android/i)
+  isAndroid.value = /android/i.test(navigator.userAgent)
 })
-
-function handleAnalytics(type: 'beta' | 'stable') {
-  window.gtag?.('event', 'Download', {
-    event_category: 'App',
-    event_label: type === 'stable' ? 'Stable' : 'Beta',
-    version: type === 'stable'
-      ? release.stable.tag_name
-      : release.beta.tag_name,
-  })
-}
 </script>
 
 <template>
   <div>
-    <div v-if="!isAndroid" class="custom-block danger">
-      <p class="custom-block-title">
-        Unsupported operating system
-      </p>
-      <p>
-        <strong>Mihon</strong> is an <strong>Android app</strong> only.
-        Use an <strong>Android device</strong> to download and install the app.
-      </p>
-    </div>
     <div v-if="!isAndroid" class="custom-block warning">
       <p class="custom-block-title">
-        Caution
+        {{ isChinese ? '仅支持 Android' : 'Android only' }}
       </p>
       <p>
-        Any app for any operating systems other than Android called
-        <strong>Mihon</strong> is not affiliated with this project.
+        {{ isChinese
+          ? 'Koharia 是 Android 阅读器。请使用 Android 设备下载和安装。'
+          : 'Koharia is an Android reader. Download and install it on an Android device.' }}
       </p>
-      <blockquote>
-        For more information, read the
-        <a href="/docs/faq/general">General FAQ</a>.
-      </blockquote>
     </div>
     <div class="download-buttons">
       <a
         class="download-button primary"
-        :download="downloadInformation.stable.asset?.name"
-        :href="downloadInformation.stable.asset?.browser_download_url"
-        @click="handleAnalytics('stable')"
+        :download="universalApk?.name"
+        :href="downloadUrl"
       >
         <IconDownload />
-        <span class="text">Mihon</span>
-        <span class="version">{{ downloadInformation.stable.tagName }}</span>
-      </a>
-      <a
-        class="download-button secondary"
-        :download="downloadInformation.beta.asset?.name"
-        :href="downloadInformation.beta.asset?.browser_download_url"
-        @click="handleAnalytics('beta')"
-      >
-        <IconBugReport />
-        <span class="text">Mihon Beta</span>
-        <span class="version">{{ downloadInformation.beta.tagName }}</span>
+        <span class="text">{{ isChinese ? '下载 Koharia' : 'Download Koharia' }}</span>
+        <span v-if="!releaseData.isFallback" class="version">{{ release.tag_name }}</span>
       </a>
     </div>
+    <p v-if="!universalApk" class="release-fallback">
+      {{ isChinese ? '未找到通用 APK，已跳转至 GitHub Release 页面。' : 'No universal APK was found; this link opens the GitHub Release page.' }}
+    </p>
     <span class="version-disclaimer">
-      Requires <strong>Android 8.0</strong> or higher.
+      {{ isChinese ? '需要 Android 8.0 或更高版本。' : 'Requires Android 8.0 or later.' }}
     </span>
   </div>
 </template>
@@ -89,71 +55,30 @@ function handleAnalytics(type: 'beta' | 'stable') {
 <style lang="stylus">
 .download-buttons {
   display: flex
-  gap: 0.75em
   justify-content: center
-  align-items: center
   margin: 0.75em auto
 }
 
 .download-button {
   display: inline-block
-  border: 1px solid transparent
-  text-align: center
-  font-weight: 600
-  white-space: nowrap
-  transition: color 0.25s, border-color 0.25s, background-color 0.25s
-  cursor: pointer
-  transition: all 0.3s ease
+  border: 1px solid var(--vp-button-brand-border)
   border-radius: 20px
+  color: var(--vp-button-brand-text)
+  background-color: var(--vp-button-brand-bg)
   padding: 0 20px
   line-height: 38px
   font-size: 14px
+  font-weight: 600
 
   &:hover {
+    color: var(--vp-button-brand-hover-text)
+    background-color: var(--vp-button-brand-hover-bg)
     text-decoration: none !important
   }
 
-  &.primary {
-    border-color: var(--vp-button-brand-border)
-    color: var(--vp-button-brand-text)
-    background-color: var(--vp-button-brand-bg)
-
-    &:hover {
-      border-color: var(--vp-button-brand-hover-border)
-      color: var(--vp-button-brand-hover-text)
-      background-color: var(--vp-button-brand-hover-bg)
-    }
-
-    &:active {
-      border-color: var(--vp-button-brand-active-border)
-      color: var(--vp-button-brand-active-text)
-      background-color: var(--vp-button-brand-active-bg)
-    }
-  }
-
-  &.secondary {
-    border-color: var(--vp-button-alt-border)
-    color: var(--vp-button-alt-text)
-    background-color: var(--vp-button-alt-bg)
-
-    &:hover {
-      border-color: var(--vp-button-alt-hover-border)
-      color: var(--vp-button-alt-hover-text)
-      background-color: var(--vp-button-alt-hover-bg)
-    }
-
-    &:active {
-      border-color: var(--vp-button-alt-active-border)
-      color: var(--vp-button-alt-active-text)
-      background-color: var(--vp-button-alt-active-bg)
-    }
-  }
-
   svg {
-    display: inline-block
-    vertical-align: middle
     margin-right: 0.5em
-    font-size: 1.25em
+    vertical-align: middle
   }
 
   .text {
@@ -165,10 +90,12 @@ function handleAnalytics(type: 'beta' | 'stable') {
   }
 }
 
-.version-disclaimer {
+.version-disclaimer,
+.release-fallback {
   display: block
-  text-align: center
   margin: 0.75em auto
+  text-align: center
   font-size: 0.75rem
+  color: var(--vp-c-text-2)
 }
 </style>

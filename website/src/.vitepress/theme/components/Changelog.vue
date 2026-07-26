@@ -1,112 +1,68 @@
 <script setup lang="ts">
-import type { AppRelease } from '../data/release.data'
 import MarkdownIt from 'markdown-it'
-import { computed, toRefs } from 'vue'
-import { data as release } from '../data/release.data'
+import { useData } from 'vitepress'
+import { computed } from 'vue'
+import { data as releaseData } from '../data/release.data'
 import { formatChangelog } from '../utils/formatChangelog'
 import Contributors from './Contributors.vue'
 
-const props = defineProps<{ type: keyof AppRelease }>()
-const { type } = toRefs(props)
-
+const { lang } = useData()
+const isChinese = computed(() => lang.value.startsWith('zh'))
 const md = new MarkdownIt({ html: true })
-
-const changelog = computed(() => formatChangelog(md, release[type.value].body))
+const changelog = computed(() => formatChangelog(md, releaseData.release.body))
+const prefix = computed(() => isChinese.value ? '/zh' : '/en')
 </script>
 
 <template>
-  <div class="changelog">
-    <header>
-      <IconNewspaperVariant />
-      <h2>Changelog</h2>
-    </header>
-    <div v-html="changelog" />
-    <Contributors
-      :body="release[type].body!"
-      :author="release[type].author.login"
-      :tag="release[type].tag_name"
-    />
-  </div>
-  <div class="fullChangelog">
-    <p>
-      View the release page
-      <a :href="`/changelogs/${release[type].tag_name}`">
-        here
-      </a>
-    </p>
-  </div>
+  <template v-if="releaseData.isFallback">
+    <div class="custom-block warning">
+      <p class="custom-block-title">
+        {{ isChinese ? '发布信息暂不可用' : 'Release information unavailable' }}
+      </p>
+      <p>
+        <a :href="releaseData.release.html_url">{{ isChinese ? '在 GitHub Releases 查看正式版本。' : 'View official releases on GitHub Releases.' }}</a>
+      </p>
+    </div>
+  </template>
+  <template v-else>
+    <div class="changelog">
+      <header><IconNewspaperVariant /><h2>{{ isChinese ? '更新日志' : 'Changelog' }}</h2></header>
+      <div v-html="changelog" />
+      <Contributors
+        :body="releaseData.release.body!"
+        :author="releaseData.release.author.login"
+        :tag="releaseData.release.tag_name"
+      />
+    </div>
+    <div class="fullChangelog">
+      <p><a :href="`${prefix}/changelogs/${releaseData.release.tag_name}`">{{ isChinese ? '查看完整发布说明' : 'View the full release notes' }}</a></p>
+    </div>
+  </template>
 </template>
 
 <style lang="stylus">
 .changelog {
-  display: block
   border: 1px solid var(--vp-c-bg-soft)
   border-radius: 12px
   background-color: var(--vp-c-bg-soft)
-  transition: border-color 0.25s, background-color 0.25s
   padding: 24px
-  height: 100%
   margin: 1.5em auto 0.5em
 
   header {
     display: flex
     justify-content: center
     align-items: baseline
-    margin: 0 0 1rem
-  }
-
-  svg {
-    font-size: 1.2em
-    margin-right: 0.5rem
-    vertical-align: middle
+    gap: 0.5rem
   }
 
   h2 {
-    font-size: 1.5rem
     margin: 0
     padding: 0
-    color: var(--vp-c-text-1)
     border: none
-  }
-
-  div > p {
-    margin: 0 0 1rem
-    color: var(--vp-c-text-2)
-    font-size: 0.9rem
-  }
-
-  table {
-    border-radius: 8px
-    border-collapse: collapse
-    border: 1px solid var(--vp-c-divider)
-
-    tr,
-    th,
-    td {
-      border: none
-      width: 100%
-    }
-
-    tbody tr {
-      border-top: 1px solid var(--vp-c-divider)
-    }
-
-    tr > td {
-      &:first-child {
-        color: var(--vp-c-text-2)
-      }
-
-      &:last-child {
-        font-family: var(--vp-font-family-mono)
-        font-size: var(--vp-code-font-size)
-      }
-    }
   }
 }
 
 .fullChangelog {
-  margin: 0 0 1rem
-  color: var(--vp-c-text-2)
-  font-size: 0.9rem
+  text-align: center
 }
 </style>

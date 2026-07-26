@@ -26,6 +26,93 @@ $themeColor = #818cf8
   border-radius: 12px
 }
 
+.koharia-showcase {
+  display: grid
+  grid-template-columns: repeat(4, minmax(0, 1fr))
+  gap: 0.75rem
+  margin: 1.5rem 0 2.25rem
+
+  img {
+    display: block
+    width: 100%
+    aspect-ratio: 9 / 20
+    object-fit: cover
+    margin: 0
+    border: 1px solid var(--vp-c-divider)
+    border-radius: 0.75rem
+    box-shadow: 0 0.25rem 0.75rem rgb(0 0 0 / 8%)
+  }
+}
+
+// Let the image-heavy introduction use all space left by the sidebar and
+// the page outline, while keeping both navigation aids available.
+
+.koharia-introduction .VPDoc.has-aside .container > .content {
+  flex: 1 1 0
+  max-width: none
+  min-width: 0
+}
+
+.koharia-introduction .VPDoc.has-aside .content-container {
+  max-width: none
+}
+
+@media (min-width 1280px) {
+  // Scale the introduction with the available desktop space while keeping the
+  // outline compact and the four screenshots visually balanced.
+
+  .koharia-introduction .VPDoc {
+    --koharia-outline-width: 12vw
+    --koharia-outline-gap: 1vw
+    padding-left: 2vw
+    padding-right: 2vw
+  }
+
+  .koharia-introduction .VPDoc .container > .content {
+    padding-left: 1.5vw
+    padding-right: 1.5vw
+  }
+
+  .koharia-introduction .VPDoc .aside {
+    flex: 0 0 var(--koharia-outline-width)
+    max-width: var(--koharia-outline-width)
+    padding-left: var(--koharia-outline-gap)
+  }
+
+  .koharia-introduction .VPDoc .aside-container,
+  .koharia-introduction .VPDoc .aside-curtain {
+    width: calc(var(--koharia-outline-width) - var(--koharia-outline-gap))
+  }
+
+  .koharia-introduction .koharia-showcase {
+    gap: 1vw
+  }
+}
+
+@media (max-width 768px) {
+  .koharia-showcase {
+    grid-template-columns: repeat(2, minmax(0, 1fr))
+  }
+}
+
+@media (min-width 1440px) {
+  // Use one centered canvas for the navigation and all three page columns.
+  // This leaves proportional whitespace on both sides of wide displays.
+
+  :root {
+    --vp-layout-max-width: 70vw
+  }
+}
+
+// The default theme constrains the logo height but leaves its configured width
+// untouched. Set both dimensions here to preserve the square Koharia mark.
+
+.VPNavBarTitle .logo {
+  width: 32px
+  height: 32px
+  object-fit: contain
+}
+
 /**
  * Dark/Light Theme Overrides
  * -------------------------------------------------------------------------- */

@@ -10,11 +10,11 @@ export interface News {
 declare const data: News[]
 export { data }
 
-export default createContentLoader('news/*.md', {
+export default createContentLoader(['zh/news/*.md', 'en/news/*.md'], {
   excerpt: true,
   transform(articles) {
     return articles
-      .filter(({ url }) => url !== '/news/')
+      .filter(({ url }) => url !== '/zh/news/' && url !== '/en/news/')
       .map(
         ({ frontmatter, url }) =>
           <News>{

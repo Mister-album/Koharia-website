@@ -1,134 +1,71 @@
 import type { DefaultTheme } from 'vitepress'
 
-const sidebar: DefaultTheme.SidebarMulti = {
-  '/download/': defaultSidebar(),
-  '/extensions/': defaultSidebar(),
-  '/docs/': defaultSidebar(),
-  '/forks/': defaultSidebar(),
-  '/changelogs/': defaultSidebar(),
-  '/news/': defaultSidebar(),
-  '/sandbox/': defaultSidebar(),
-}
-
-function defaultSidebar(): DefaultTheme.SidebarItem[] {
-  return [
+export function createSidebar(locale: 'zh' | 'en'): DefaultTheme.SidebarMulti {
+  const isChinese = locale === 'zh'
+  const prefix = `/${locale}`
+  const sidebar: DefaultTheme.SidebarItem[] = [
     {
+      text: isChinese ? '项目介绍' : 'About',
       items: [
-        {
-          text: 'Download',
-          link: '/download/',
-        },
-        {
-          text: 'Changelogs',
-          link: '/changelogs/',
-        },
-        {
-          text: 'Forks',
-          link: '/forks/',
-        },
-        {
-          text: 'Contribute',
-          link: '/docs/contribute',
-        },
+        { text: isChinese ? 'Koharia 介绍' : 'About Koharia', link: `${prefix}/docs/project/introduction` },
+        { text: isChinese ? '更新日志' : 'Changelog', link: `${prefix}/changelogs/` },
+        { text: isChinese ? '免责声明' : 'Disclaimer', link: `${prefix}/docs/project/disclaimer` },
       ],
     },
     {
-      text: 'Frequently Asked Questions',
+      text: isChinese ? '开始使用' : 'Get started',
       items: [
-        { text: 'General', link: '/docs/faq/general' },
-        {
-          text: 'Library',
-          link: '/docs/faq/library',
-        },
-        {
-          text: 'Updates',
-          collapsed: true,
-          items: [
-            { text: 'Smart updates', link: '/docs/faq/updates/smart' },
-            { text: 'Upcoming', link: '/docs/faq/updates/upcoming' },
-          ],
-        },
-        {
-          text: 'Browse',
-          link: '/docs/faq/browse/',
-          collapsed: true,
-          items: [
-            { text: 'Extensions', link: '/docs/faq/browse/extensions' },
-            {
-              text: 'Local source',
-              link: '/docs/faq/browse/local-source',
-            },
-          ],
-        },
-        {
-          text: 'Downloads',
-          link: '/docs/faq/downloads',
-        },
-        {
-          text: 'Reader',
-          link: '/docs/faq/reader',
-        },
-        {
-          text: 'Settings',
-          link: '/docs/faq/settings',
-        },
-        {
-          text: 'Storage',
-          link: '/docs/faq/storage',
-        },
+        { text: isChinese ? '下载' : 'Download', link: `${prefix}/download/` },
+        { text: isChinese ? '初始化设置' : 'Initial setup', link: `${prefix}/docs/getting-started/initial-setup` },
+        { text: isChinese ? '添加服务器' : 'Add a server', link: `${prefix}/docs/getting-started/add-server` },
       ],
     },
     {
-      text: 'Guides',
+      text: isChinese ? '设置参数' : 'Settings',
       items: [
-        {
-          text: 'Getting started',
-          link: '/docs/guides/getting-started',
-        },
-        {
-          text: 'Troubleshooting',
-          link: '/docs/guides/troubleshooting/',
-          collapsed: true,
-          items: [
-            {
-              text: 'Common issues',
-              link: '/docs/guides/troubleshooting/common-issues',
-            },
-            {
-              text: 'Diagnosis',
-              link: '/docs/guides/troubleshooting/diagnosis',
-            },
-          ],
-        },
-        {
-          text: 'Source migration',
-          link: '/docs/guides/source-migration',
-        },
-        { text: 'Backups', link: '/docs/guides/backups' },
-        { text: 'Tracking', link: '/docs/guides/tracking' },
-        { text: 'Categories', link: '/docs/guides/categories' },
-        {
-          text: 'Local source',
-          link: '/docs/guides/local-source/',
-          collapsed: true,
-          items: [
-            {
-              text: 'Advanced editing',
-              link: '/docs/guides/local-source/advanced',
-            },
-          ],
-        },
-        {
-          text: 'Reader settings',
-          link: '/docs/guides/reader-settings',
-        },
-        {
-          text: 'Shizuku',
-          link: '/docs/guides/shizuku',
-        },
+        { text: isChinese ? '书架' : 'Library', link: `${prefix}/docs/settings/library` },
+        { text: isChinese ? '漫画阅读器' : 'Manga reader', link: `${prefix}/docs/settings/manga-reader` },
+        { text: isChinese ? '书籍阅读器' : 'Book reader', link: `${prefix}/docs/settings/book-reader` },
+        { text: isChinese ? '下载' : 'Downloads', link: `${prefix}/docs/settings/downloads` },
+        { text: isChinese ? '其他设置' : 'Other settings', link: `${prefix}/docs/settings/other` },
       ],
+    },
+    {
+      text: isChinese ? '帮助' : 'Help',
+      items: [
+        { text: isChinese ? '常见问题' : 'FAQ', link: `${prefix}/docs/faq/general` },
+        { text: isChinese ? '故障排查' : 'Troubleshooting', link: `${prefix}/docs/guides/troubleshooting/` },
+        { text: isChinese ? '交流反馈' : 'Feedback', link: `${prefix}/docs/help/feedback` },
+        { text: isChinese ? '开源许可证' : 'Open-source licenses', link: `${prefix}/docs/help/licenses` },
+        { text: isChinese ? '隐私说明' : 'Privacy', link: `${prefix}/privacy/` },
+      ],
+    },
+    {
+      text: isChinese ? '新闻' : 'News',
+      link: `${prefix}/news/`,
+    },
+    {
+      text: isChinese ? '支持项目' : 'Support',
+      link: `${prefix}/support/`,
+    },
+    {
+      text: isChinese ? '参与贡献' : 'Contribute',
+      link: `${prefix}/docs/contribute`,
     },
   ]
-}
 
-export default sidebar
+  return {
+    [`${prefix}/download/`]: sidebar,
+    [`${prefix}/docs/project/`]: sidebar,
+    [`${prefix}/docs/getting-started/`]: sidebar,
+    [`${prefix}/docs/settings/`]: sidebar,
+    [`${prefix}/docs/help/`]: sidebar,
+    [`${prefix}/docs/faq/`]: sidebar,
+    [`${prefix}/docs/guides/`]: sidebar,
+    [`${prefix}/docs/contribute`]: sidebar,
+    [`${prefix}/changelogs/`]: sidebar,
+    [`${prefix}/news/`]: sidebar,
+    [`${prefix}/privacy/`]: sidebar,
+    [`${prefix}/support/`]: sidebar,
+  }
+}

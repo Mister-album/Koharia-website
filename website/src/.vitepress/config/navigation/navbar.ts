@@ -1,30 +1,12 @@
 import type { DefaultTheme } from 'vitepress'
 
-const nav: DefaultTheme.NavItem[] = [
-  {
-    text: 'Get v{app_version}',
-    activeMatch: '^/*?(download|changelogs)/*?$',
-    items: [
-      {
-        text: 'Download',
-        link: '/download/',
-      },
-      {
-        text: 'Changelogs',
-        link: '/changelogs/',
-      },
-    ],
-  },
-  {
-    text: 'Docs',
-    link: '/docs/guides/getting-started',
-    activeMatch: '/docs/',
-  },
-  {
-    text: 'News',
-    link: '/news/',
-    activeMatch: '/news/',
-  },
-]
+export function createNav(locale: 'zh' | 'en'): DefaultTheme.NavItem[] {
+  const isChinese = locale === 'zh'
+  const prefix = `/${locale}`
 
-export default nav
+  return [
+    { text: isChinese ? '文档' : 'Docs', link: `${prefix}/docs/project/introduction` },
+    { text: isChinese ? '下载' : 'Download', link: `${prefix}/download/` },
+    { text: isChinese ? '新闻' : 'News', link: `${prefix}/news/` },
+  ]
+}

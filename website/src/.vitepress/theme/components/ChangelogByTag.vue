@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import MarkdownIt from 'markdown-it'
 import moment from 'moment'
+import { useData } from 'vitepress'
 import { computed, toRefs } from 'vue'
-import { data as changelogs } from '../data/changelogs.data'
+import { data as changelogData } from '../data/changelogs.data'
 import { formatChangelog } from '../utils/formatChangelog'
 import Contributors from './Contributors.vue'
 
 const props = defineProps<{ tag: string }>()
 const { tag } = toRefs(props)
+const { lang } = useData()
+const isChinese = computed(() => lang.value.startsWith('zh'))
+const changelogs = changelogData.releases
 
 const md = new MarkdownIt({ html: true })
 
@@ -48,20 +52,20 @@ function assetDate(dateStr?: string) {
   <div v-if="release">
     <h1 :id="isLatest ? 'latest' : release.tag_name">
       {{ release.tag_name.substring(1) }}
-      <Badge v-if="isLatest" type="tip" text="Latest" />
+      <Badge v-if="isLatest" type="tip" :text="isChinese ? '最新' : 'Latest'" />
       <a
         class="header-anchor"
         :href="isLatest ? '#latest' : `#${release.tag_name}`"
         :aria-label="`Permalink to &quot;${release.tag_name}&quot;`"
       />
     </h1>
-    <time :datetime="release!.published_at!">{{ new Date(release!.published_at!).toLocaleDateString('en', { dateStyle: 'medium' }) }}</time>
+    <time :datetime="release!.published_at!">{{ new Date(release!.published_at!).toLocaleDateString(isChinese ? 'zh-CN' : 'en', { dateStyle: 'medium' }) }}</time>
     <div v-html="renderMarkdown(release!.body)" />
     <Contributors :body="release!.body!" :author="release!.author.login" :tag="release!.tag_name" />
     <details v-if="release!.assets && release!.assets.length" class="assets mt-4">
       <summary>
         <h3>
-          Assets
+          {{ isChinese ? '文件' : 'Assets' }}
           <Badge type="info" :text="String(release!.assets.length)" />
         </h3>
       </summary>
@@ -84,7 +88,7 @@ function assetDate(dateStr?: string) {
     </details>
   </div>
   <div v-else>
-    <p>Release not found.</p>
+    <p>{{ isChinese ? '未找到该发布。' : 'Release not found.' }}</p>
   </div>
 </template>
 
