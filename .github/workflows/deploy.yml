@@ -2,11 +2,6 @@ name: Deploy
 
 on:
     workflow_dispatch: {}
-    push:
-        branches:
-            - main
-    repository_dispatch:
-        types: [app_release]
 
 concurrency:
   group: ${{ github.workflow }}

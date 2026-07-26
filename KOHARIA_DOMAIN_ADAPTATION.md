@@ -1,178 +1,149 @@
 # Koharia 域名与内部跳转适配指南
 
-本文用于将 Koharia 的公开网站域名从历史占位域名迁移到 `koharia.org`，并指导 Android 应用、GitHub 文档、发布说明和外部入口同步更新链接。
+本文记录 Koharia 官网在 `koharia.org` 上的部署方式、公开路由和各外部入口的适配要求。
 
-## 1. 目标地址与路由约定
+## 1. 当前部署架构
 
-生产环境的唯一规范域名为 `https://koharia.org`。
+生产站点使用 Cloudflare Workers Static Assets，并由 Cloudflare Workers Builds 连接 `Mister-album/Koharia-website` 仓库。
 
-| 用途 | 地址 | 说明 |
-| --- | --- | --- |
-| 根入口 | `https://koharia.org/` | 302 跳转到中文站。 |
-| 中文站 | `https://koharia.org/zh/` | 默认内容语言。 |
-| 英文站 | `https://koharia.org/en/` | 英文内容语言。 |
-| 下载页 | `/{locale}/download/` | `locale` 为 `zh` 或 `en`。 |
-| 更新日志 | `/{locale}/changelogs/` | 版本详情为 `/{locale}/changelogs/{tag}`。 |
-| 新闻 | `/{locale}/news/` | 第一版可能显示“暂无新闻”。 |
-| Koharia 介绍 | `/{locale}/docs/project/introduction` | 项目定位、功能和系统要求。 |
-| 免责声明 | `/{locale}/docs/project/disclaimer` | 内容、账号与软件责任边界。 |
-| 初始化设置 | `/{locale}/docs/getting-started/initial-setup` | 应用内新手引导入口。 |
-| 添加服务器 | `/{locale}/docs/getting-started/add-server` | Komga 地址和认证设置。 |
-| 书架设置 | `/{locale}/docs/settings/library` | 媒体库分类、显示和更新。 |
-| 漫画阅读器 | `/{locale}/docs/settings/manga-reader` | 图片式漫画阅读设置。 |
-| 书籍阅读器 | `/{locale}/docs/settings/book-reader` | EPUB 阅读设置。 |
-| 下载设置 | `/{locale}/docs/settings/downloads` | 下载队列和本地存储。 |
-| 其他设置 | `/{locale}/docs/settings/other` | 外观、数据、更新和安全。 |
-| 常见问题 | `/{locale}/docs/faq/general` | 常见使用问题入口。 |
-| 故障排查 | `/{locale}/docs/guides/troubleshooting/` | 日志和连接问题入口。 |
-| 交流反馈 | `/{locale}/docs/help/feedback` | GitHub Issue 的反馈规范。 |
-| 开源许可证 | `/{locale}/docs/help/licenses` | 应用和网站的许可证与归属。 |
-| 隐私说明 | `/{locale}/privacy/` | 应用内隐私入口应使用该地址。 |
-| 支持项目 | `/{locale}/support/` | 爱发电支持入口。 |
-| 参与贡献 | `/{locale}/docs/contribute` | GitHub、翻译与贡献入口。 |
+Cloudflare 项目使用以下设置：
 
-站点内部链接应继续使用以 `/zh/` 或 `/en/` 开头的绝对路径，例如 `/zh/download/`。
-
-只有应用、README、GitHub Release、社交资料和邮件等站外入口需要使用完整 URL，例如 `https://koharia.org/zh/download/`。
-
-不要再新建无语言前缀的 `/docs/**`、`/download/**` 或 `/privacy/**` 链接。
-
-## 2. 网站仓库修改清单
-
-### 域名和部署
-
-1. 在 Netlify 为此站点添加 `koharia.org`，并将其设为 Primary domain。
-2. 如需启用 `www.koharia.org`，将其设为别名并由 Netlify 重定向到 `https://koharia.org`。
-3. 按 Netlify 域名面板显示的记录配置域名 DNS。
-   对根域使用面板要求的 A、ALIAS 或 ANAME 记录。
-   对 `www` 使用面板要求的 CNAME 记录。
-4. 等待 Netlify 签发 HTTPS 证书后，启用强制 HTTPS。
-5. `website/src/.vitepress/config.ts` 的本地回退值已配置为 `https://koharia.org`，不要改回旧域名。
-
-`netlify.toml` 的生产构建命令已经使用 `VITE_HOSTNAME=$URL`。
-
-Netlify 将在生产构建时传入主域名，因此 sitemap 会自动使用 `koharia.org`。
-
-部署预览仍应使用 `$DEPLOY_PRIME_URL`，不要把预览环境强制改为正式域名。
-
-### GitHub Release 数据
-
-下载页和更新日志在构建时读取 `Mister-album/Koharia` 的 GitHub Releases。
-为避免匿名 GitHub API 的限流，在 Netlify 的环境变量中新增 `GITHUB_TOKEN`。
-
-该令牌只需要读取 `Mister-album/Koharia` 公开 Release 的权限；不要把令牌写进仓库、Markdown 文件或客户端代码。
-
-本仓库的 GitHub Pages 工作流已使用 Actions 自动提供的 `GITHUB_TOKEN`。
-
-### 重定向
-
-`website/src/public/_redirects` 中的根路径规则应保留：
-
-```text
-/  /zh/  302
-```
-
-第一版仅保留根路径跳转，不保留无语言前缀的旧 `/help/**` 或 `/docs/**` 规则。
-
-新建应用内或公开入口时，请直接使用本表中的语言前缀规范地址，不要依赖旧路径重定向。
-
-### 站内链接与新增页面
-
-新增或修改 Markdown 页面时，中文文件放在 `website/src/zh/`，英文文件放在 `website/src/en/`。
-
-两个语言目录的页面结构必须保持一致。
-
-例如新增“备份”页面时，应同时创建：
-
-```text
-website/src/zh/docs/settings/backups.md
-website/src/en/docs/settings/backups.md
-```
-
-随后在 `website/src/.vitepress/config/navigation/sidebar.ts` 为两种语言增加相应导航项。
-
-不要在中文页面直接链接 `/en/`，或在英文页面直接链接 `/zh/`，除非该链接就是显式语言切换。
-
-## 3. Koharia Android 项目适配
-
-在 `E:\project\Koharia` 中全局搜索 `https://koharia.app`。
-
-将所有应用内帮助链接替换为带语言前缀的完整 `.org` URL。
-
-第一版推荐统一使用中文入口：
-
-| 现有用途 | 建议新地址 |
+| 设置 | 值 |
 | --- | --- |
-| 新手引导 | `https://koharia.org/zh/docs/getting-started/initial-setup` |
-| 添加服务器 | `https://koharia.org/zh/docs/getting-started/add-server` |
-| 故障排查 | `https://koharia.org/zh/docs/guides/troubleshooting/` |
-| 书架设置 | `https://koharia.org/zh/docs/settings/library` |
-| 下载设置 | `https://koharia.org/zh/docs/settings/downloads` |
-| 隐私政策 | `https://koharia.org/zh/privacy/` |
-| 交流反馈 | `https://koharia.org/zh/docs/help/feedback` |
-| 开源许可证 | `https://koharia.org/zh/docs/help/licenses` |
-| 贡献与翻译 | `https://koharia.org/zh/docs/contribute` |
+| Worker 名称 | `koharia-website` |
+| 生产分支 | `main` |
+| 根目录 | `website` |
+| 构建命令 | `pnpm build` |
+| 生产部署命令 | `pnpm exec wrangler deploy` |
+| 非生产部署命令 | `pnpm exec wrangler versions upload` |
+| 构建输出目录 | `website/dist` |
+| 正式域名 | `https://koharia.org` |
 
-当前网站不保留历史 Mihon 帮助页面、Cloudflare 专用段落或旧 FAQ 锚点。
+Wrangler 配置位于 `website/wrangler.jsonc`，静态资源目录必须保持为 `./dist`。
+Cloudflare 构建环境需要名为 `GITHUB_TOKEN` 的加密变量，以提高构建期间读取 Koharia Releases 时的 GitHub API 限额。
+该令牌不得写入仓库、Markdown、客户端代码或构建日志。
 
-原本带 `#cloudflare` 或旧 FAQ 锚点的链接应更新为上表中的对应页面根路径。
+GitHub Pages 工作流仅保留为手动备用部署，不再响应 `main` 推送或应用仓库事件。
+日常生产部署完全由 Cloudflare Workers Builds 负责。
 
-已知需要检查的应用文件包括：
+## 2. 规范域名与公开路由
 
-- `app/src/main/java/eu/kanade/presentation/webview/WebViewScreenContent.kt`
-- `app/src/main/java/eu/kanade/presentation/more/onboarding/GuidesStep.kt`
-- `app/src/main/java/eu/kanade/presentation/more/settings/screen/about/AboutScreen.kt`
-- `app/src/main/java/eu/kanade/tachiyomi/data/library/LibraryUpdateJob.kt`
-- `app/src/main/java/eu/kanade/tachiyomi/data/library/LibraryUpdateNotifier.kt`
-- `app/src/main/java/eu/kanade/presentation/more/settings/screen/SettingsDataScreen.kt`
-- `i18n/README.md`
+所有公开链接统一使用 `https://koharia.org`，不再使用 `koharia.app`、Netlify 域名或固定的 `workers.dev` 地址。
 
-应用不应依赖根路径 `/` 的自动跳转。
+| 用途 | 中文 | 英文 |
+| --- | --- | --- |
+| 首页 | `/zh/` | `/en/` |
+| 下载 | `/zh/download/` | `/en/download/` |
+| 更新日志 | `/zh/changelogs/` | `/en/changelogs/` |
+| 新闻 | `/zh/news/` | `/en/news/` |
+| Koharia 介绍 | `/zh/docs/project/introduction` | `/en/docs/project/introduction` |
+| 免责声明 | `/zh/docs/project/disclaimer` | `/en/docs/project/disclaimer` |
+| 初始化设置 | `/zh/docs/getting-started/initial-setup` | `/en/docs/getting-started/initial-setup` |
+| 添加服务器 | `/zh/docs/getting-started/add-server` | `/en/docs/getting-started/add-server` |
+| 书架设置 | `/zh/docs/settings/library` | `/en/docs/settings/library` |
+| 漫画阅读器 | `/zh/docs/settings/manga-reader` | `/en/docs/settings/manga-reader` |
+| 书籍阅读器 | `/zh/docs/settings/book-reader` | `/en/docs/settings/book-reader` |
+| 下载设置 | `/zh/docs/settings/downloads` | `/en/docs/settings/downloads` |
+| 其他设置 | `/zh/docs/settings/other` | `/en/docs/settings/other` |
+| 常见问题 | `/zh/docs/faq/general` | `/en/docs/faq/general` |
+| 故障排查 | `/zh/docs/guides/troubleshooting/` | `/en/docs/guides/troubleshooting/` |
+| 交流反馈 | `/zh/docs/help/feedback` | `/en/docs/help/feedback` |
+| 开源许可证 | `/zh/docs/help/licenses` | `/en/docs/help/licenses` |
+| 隐私说明 | `/zh/privacy/` | `/en/privacy/` |
+| 支持项目 | `/zh/support/` | `/en/support/` |
+| 参与贡献 | `/zh/docs/contribute` | `/en/docs/contribute` |
 
-使用明确的 `/zh/` 或 `/en/` 路径可以避免语言策略变化影响应用内入口。
+根路径 `/` 通过 `website/src/public/_redirects` 临时重定向到 `/zh/`。
+应用和外部资料必须直接使用带语言前缀的完整 URL，不应依赖根路径重定向。
+网站内部链接也必须带 `/zh/` 或 `/en/` 前缀。
+首版不为 Mihon 的旧路径、无语言前缀路径或旧锚点提供兼容重定向。
 
-## 4. GitHub 与外部资料
+## 3. Android 应用适配
 
-更新以下位置中的站点主页、下载页、隐私政策和支持链接：
+在 `E:\project\Koharia` 中搜索旧域名、Mihon 链接和无语言前缀的帮助地址。
+应用应根据界面语言选择对应的中文或英文 URL；尚未实现语言映射的入口可以先明确指向中文页面。
 
-- `Mister-album/Koharia` 的 README、About、Release 说明、Issue 模板和 Wiki。
-- `Mister-album/Koharia-website` 的 README 和仓库 About。
-- GitHub Release 的下载说明。
-- 爱发电、社交资料和其他公开介绍页。
+至少检查以下入口：
 
-应用更新检查仍然使用 GitHub Releases：
+- 新手引导和添加服务器；
+- 连接与阅读故障排查；
+- 书架、阅读器和下载设置；
+- 隐私说明和开源许可证；
+- 反馈、贡献和翻译；
+- 关于页面中的官网、下载和 Release 链接。
+
+例如中文隐私入口应为 `https://koharia.org/zh/privacy/`，英文隐私入口应为 `https://koharia.org/en/privacy/`。
+应用更新检查继续使用 `https://github.com/Mister-album/Koharia/releases`，不经过网站转发。
+
+## 4. Release 与网站自动更新
+
+下载页在构建时读取 `Mister-album/Koharia` 的最新正式 GitHub Release。
+通用 APK 的规范名称为：
 
 ```text
-https://github.com/Mister-album/Koharia/releases
+Koharia-<tag>-release.apk
 ```
 
-该地址不因网站域名迁移而变化。
+例如标签为 `v1.2.0` 时，文件名应为 `Koharia-v1.2.0-release.apk`。
+如果找不到这个文件，下载按钮会安全降级到对应的 GitHub Release 页面。
 
-## 5. 上线验证
+Koharia 主仓库需要保存以下 GitHub Actions Secret：
 
-域名配置和代码修改完成后，执行以下检查：
+```text
+CLOUDFLARE_WORKERS_DEPLOY_HOOK
+```
+
+它的值是 Cloudflare 为 `main` 分支生成的 Deploy Hook URL。
+Deploy Hook URL 本身就是凭证，不得提交到仓库或公开展示。
+正式 Release 发布后，主仓库工作流会向该地址发送 `POST` 请求，触发 Cloudflare 重新构建网站，使下载页和更新日志读取新版本。
+
+## 5. 网站内容维护规则
+
+中文 Markdown 放在 `website/src/zh/`，英文 Markdown 放在 `website/src/en/`。
+两个目录的页面结构应保持对应，以便语言切换保留当前页面类型。
+
+新增页面后需要同步检查：
+
+1. 两种语言的 Markdown 文件；
+2. `website/src/.vitepress/config/navigation/` 下的导航与侧栏；
+3. 页面内链接是否保留当前语言前缀；
+4. Sitemap 是否仅包含正式公开页面；
+5. 应用或 README 中是否需要新增完整的公开 URL。
+
+## 6. Cloudflare 运维说明
+
+生产分支 `main` 的提交会自动构建并部署到 `koharia.org`。
+非生产分支使用 `wrangler versions upload` 创建预览版本，不替换生产环境。
+预览 URL 仅用于测试，不应写入应用、README、Release 或搜索引擎元数据。
+
+如需关闭固定的生产 `workers.dev` 地址，可在 `website/wrangler.jsonc` 中设置 `workers_dev: false`，并保留 `preview_urls: true` 供分支预览使用。
+修改这一设置前，应先确认自定义域名和预览构建均正常。
+
+Cloudflare 中的敏感配置包括：
+
+- Workers Builds 的 `GITHUB_TOKEN`；
+- Deploy Hook URL；
+- 未来可能增加的账户级 API Token。
+
+日常 GitHub 自动构建和 Deploy Hook 不需要在仓库中保存 Cloudflare API Token。
+只有通过 Wrangler 从 GitHub Actions 主动部署时，才通常需要 `CLOUDFLARE_API_TOKEN` 和 `CLOUDFLARE_ACCOUNT_ID`。
+
+## 7. 验证清单
+
+在本地执行：
 
 ```powershell
 cd E:\project\Koharia-website\website
 pnpm test
-pnpm dev
 ```
 
-在浏览器中验证：
+部署后检查：
 
-1. `https://koharia.org/` 跳转到 `https://koharia.org/zh/`。
-2. `https://koharia.org/en/` 可直接访问，并能正常切换语言。
-3. 下载页、更新日志、新闻、隐私和核心文档均使用 `koharia.org`。
-4. sitemap 中没有 `koharia.app`、无语言前缀旧 Docs 路径、Extensions 或 Forks 页面。
-5. Android 应用中的每个帮助入口均打开对应的 `.org/zh/` 页面。
-6. Netlify Production 和 Deploy Preview 的 sitemap 主机名分别为正式域名和预览域名。
-
-## 6. 迁移完成条件
-
-当以下条件全部满足时，可以认为域名迁移完成：
-
-- Netlify 已为 `koharia.org` 签发有效 HTTPS 证书。
-- `koharia.org` 是唯一的 Production Primary domain。
-- 网站配置的默认主机名、sitemap 和公开元数据均使用 `https://koharia.org`。
-- Koharia 应用与公开资料不再引用 `koharia.app`。
-- 所有公开帮助链接包含明确的 `/zh/` 或 `/en/` 语言前缀。
+1. `https://koharia.org/` 跳转到 `https://koharia.org/zh/`；
+2. `/zh/`、`/en/` 和各文档二级路径可直接刷新；
+3. `https://koharia.org/robots.txt` 明确允许抓取并指向 Sitemap；
+4. `https://koharia.org/sitemap.xml` 只使用正式域名；
+5. 下载页匹配 `Koharia-<tag>-release.apk`；
+6. 正式 Release 发布后，Cloudflare 出现由 Deploy Hook 触发的新构建；
+7. 推送网站 `main` 时不再重复自动运行 GitHub Pages 部署；
+8. 网站、应用和公开资料中不再出现 Netlify 或旧域名说明。
