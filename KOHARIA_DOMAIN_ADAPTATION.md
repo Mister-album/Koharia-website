@@ -23,8 +23,8 @@ Wrangler 配置位于 `website/wrangler.jsonc`，静态资源目录必须保持�
 Cloudflare 构建环境需要名为 `GITHUB_TOKEN` 的加密变量，以提高构建期间读取 Koharia Releases 时的 GitHub API 限额。
 该令牌不得写入仓库、Markdown、客户端代码或构建日志。
 
-GitHub Pages 工作流仅保留为手动备用部署，不再响应 `main` 推送或应用仓库事件。
-日常生产部署完全由 Cloudflare Workers Builds 负责。
+GitHub Pages 部署工作流和发布配置已经移除。
+生产部署完全由 Cloudflare Workers Builds 负责。
 
 ## 2. 规范域名与公开路由
 
@@ -145,5 +145,5 @@ pnpm test
 4. `https://koharia.org/sitemap.xml` 只使用正式域名；
 5. 下载页匹配 `Koharia-<tag>-release.apk`；
 6. 正式 Release 发布后，Cloudflare 出现由 Deploy Hook 触发的新构建；
-7. 推送网站 `main` 时不再重复自动运行 GitHub Pages 部署；
+7. 仓库中不存在 GitHub Pages 部署工作流或发布配置；
 8. 网站、应用和公开资料中不再出现 Netlify 或旧域名说明。
