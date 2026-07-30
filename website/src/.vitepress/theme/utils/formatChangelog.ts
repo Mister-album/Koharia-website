@@ -1,7 +1,49 @@
 import type MarkdownIt from 'markdown-it'
 
 export interface ChangelogFormatOptions {
+  locale?: ReleaseNotesLocale
   stripChecksums?: boolean
+}
+
+export type ReleaseNotesLocale = 'zh' | 'en'
+
+const releaseNotesMarker = /<!--\s*koharia-release-notes:(zh|en|end)\s*-->/gi
+
+/**
+ * Select the requested language block and append everything after the end
+ * marker as shared release notes. Bodies without Koharia markers are returned
+ * unchanged for compatibility with older releases.
+ */
+export function localizeReleaseNotes(body: string | null | undefined, locale: ReleaseNotesLocale): string {
+  if (!body)
+    return body ?? ''
+
+  const markers = [...body.matchAll(releaseNotesMarker)]
+  if (!markers.some(marker => marker[1].toLowerCase() === 'zh' || marker[1].toLowerCase() === 'en'))
+    return body
+
+  const localizedSections: string[] = []
+  let sharedSection = ''
+
+  for (const [index, marker] of markers.entries()) {
+    const name = marker[1].toLowerCase()
+    const markerIndex = marker.index ?? 0
+    const sectionStart = markerIndex + marker[0].length
+    const sectionEnd = markers[index + 1]?.index ?? body.length
+    const section = body.slice(sectionStart, sectionEnd).trim()
+
+    if (name === locale && section)
+      localizedSections.push(section)
+
+    if (name === 'end') {
+      sharedSection = body.slice(sectionStart).trim()
+      break
+    }
+  }
+
+  return [...localizedSections, sharedSection]
+    .filter(Boolean)
+    .join('\n\n')
 }
 
 function convertCallouts(md: MarkdownIt, input: string): string {
@@ -30,7 +72,11 @@ function convertCallouts(md: MarkdownIt, input: string): string {
 }
 
 export function formatChangelog(md: MarkdownIt, body: string | null | undefined, options: ChangelogFormatOptions = {}): string {
-  const base = body ?? 'No changelog provided.'
+  const base = body == null
+    ? 'No changelog provided.'
+    : options.locale
+      ? localizeReleaseNotes(body, options.locale)
+      : body
   const text = options.stripChecksums
     ? base.split(/---\r\n\r\n### Checksums|---\r\n\r\nMD5/)[0]
     : base

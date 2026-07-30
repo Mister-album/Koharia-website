@@ -52,7 +52,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style lang="stylus">
+<style lang="stylus" scoped>
 .download-buttons {
   display: flex
   justify-content: center
@@ -60,33 +60,45 @@ onMounted(() => {
 }
 
 .download-button {
-  display: inline-block
+  display: inline-flex
+  align-items: center
+  justify-content: center
+  gap: 0.5rem
   border: 1px solid var(--vp-button-brand-border)
-  border-radius: 20px
+  border-radius: 999px
   color: var(--vp-button-brand-text)
   background-color: var(--vp-button-brand-bg)
-  padding: 0 20px
-  line-height: 38px
+  min-height: 40px
+  padding: 0.625rem 1.25rem
+  line-height: 1.25
   font-size: 14px
   font-weight: 600
+  text-decoration: none
+  transition: color 0.25s, background-color 0.25s, border-color 0.25s
 
-  &:hover {
+  &:visited {
+    color: var(--vp-button-brand-text)
+  }
+
+  &:hover,
+  &:focus-visible {
     color: var(--vp-button-brand-hover-text)
     background-color: var(--vp-button-brand-hover-bg)
+    border-color: var(--vp-button-brand-hover-border)
     text-decoration: none !important
   }
 
   svg {
-    margin-right: 0.5em
-    vertical-align: middle
-  }
-
-  .text {
-    margin-right: 10px
+    flex: 0 0 auto
+    width: 1rem
+    height: 1rem
+    margin: 0
+    color: currentColor
   }
 
   .version {
     font-size: 0.8em
+    opacity: 0.85
   }
 }
 

@@ -4,7 +4,7 @@ import moment from 'moment'
 import { useData } from 'vitepress'
 import { computed, toRefs } from 'vue'
 import { data as changelogData } from '../data/changelogs.data'
-import { formatChangelog } from '../utils/formatChangelog'
+import { formatChangelog, localizeReleaseNotes } from '../utils/formatChangelog'
 import Contributors from './Contributors.vue'
 
 const props = defineProps<{ tag: string }>()
@@ -14,12 +14,12 @@ const isChinese = computed(() => lang.value.startsWith('zh'))
 const changelogs = changelogData.releases
 
 const md = new MarkdownIt({ html: true })
-
-function renderMarkdown(string: string | null | undefined) {
-  return formatChangelog(md, string, { stripChecksums: true })
-}
-
 const release = computed(() => changelogs.find(r => r.tag_name === tag.value))
+const releaseNotesLocale = computed(() => isChinese.value ? 'zh' as const : 'en' as const)
+const localizedReleaseNotes = computed(() => localizeReleaseNotes(release.value?.body, releaseNotesLocale.value))
+const renderedReleaseNotes = computed(() => formatChangelog(md, release.value?.body, {
+  locale: releaseNotesLocale.value,
+}))
 const latestStableTag = computed(() => {
   const stable = changelogs
     .filter(r => !r.draft && !r.prerelease)
@@ -60,8 +60,8 @@ function assetDate(dateStr?: string) {
       />
     </h1>
     <time :datetime="release!.published_at!">{{ new Date(release!.published_at!).toLocaleDateString(isChinese ? 'zh-CN' : 'en', { dateStyle: 'medium' }) }}</time>
-    <div v-html="renderMarkdown(release!.body)" />
-    <Contributors :body="release!.body!" :author="release!.author.login" :tag="release!.tag_name" />
+    <div v-html="renderedReleaseNotes" />
+    <Contributors :body="localizedReleaseNotes" :author="release!.author.login" :tag="release!.tag_name" />
     <details v-if="release!.assets && release!.assets.length" class="assets mt-4">
       <summary>
         <h3>

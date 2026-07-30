@@ -3,13 +3,15 @@ import MarkdownIt from 'markdown-it'
 import { useData } from 'vitepress'
 import { computed } from 'vue'
 import { data as releaseData } from '../data/release.data'
-import { formatChangelog } from '../utils/formatChangelog'
+import { formatChangelog, localizeReleaseNotes } from '../utils/formatChangelog'
 import Contributors from './Contributors.vue'
 
 const { lang } = useData()
 const isChinese = computed(() => lang.value.startsWith('zh'))
 const md = new MarkdownIt({ html: true })
-const changelog = computed(() => formatChangelog(md, releaseData.release.body))
+const releaseNotesLocale = computed(() => isChinese.value ? 'zh' as const : 'en' as const)
+const localizedReleaseNotes = computed(() => localizeReleaseNotes(releaseData.release.body, releaseNotesLocale.value))
+const changelog = computed(() => formatChangelog(md, releaseData.release.body, { locale: releaseNotesLocale.value }))
 const prefix = computed(() => isChinese.value ? '/zh' : '/en')
 </script>
 
@@ -29,7 +31,7 @@ const prefix = computed(() => isChinese.value ? '/zh' : '/en')
       <header><IconNewspaperVariant /><h2>{{ isChinese ? '更新日志' : 'Changelog' }}</h2></header>
       <div v-html="changelog" />
       <Contributors
-        :body="releaseData.release.body!"
+        :body="localizedReleaseNotes"
         :author="releaseData.release.author.login"
         :tag="releaseData.release.tag_name"
       />
