@@ -27,14 +27,6 @@ export default defineConfig({
     hostname,
   },
   locales: {
-    root: {
-      label: '简体中文',
-      lang: 'zh-CN',
-      title: 'Koharia',
-      description: '面向 Komga 服务器的 Android 阅读器。',
-      head: createHeadConfig('zh'),
-      themeConfig: createThemeConfig('zh'),
-    },
     zh: {
       label: '简体中文',
       lang: 'zh-CN',
