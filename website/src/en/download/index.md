@@ -19,6 +19,6 @@ The latest stable release was published <ReleaseDate />.
 
 <DownloadButtons />
 
-Koharia requires Android 8.0 or later and access to a Komga server you configure yourself.
+Koharia requires Android 8.0 or later and can connect to a Komga server you configure or use local media libraries on the device.
 
 <Changelog />

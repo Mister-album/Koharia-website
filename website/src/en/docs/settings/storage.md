@@ -5,8 +5,10 @@ description: Understand Koharia storage locations, downloads, caches, and migrat
 
 # Storage guide
 
-Koharia uses your selected storage location for automatic backups, offline downloads, and local content.
+Koharia uses the selected app storage location for automatic backups, offline Komga downloads, and compatibility directories.
 Temporary caches and the application database remain in the app's private storage.
+
+Media folders linked in local-library setup use their own Android folder grants and are not moved into this app storage location.
 
 ## Choose a storage location
 
@@ -43,6 +45,9 @@ Koharia/
 - `downloads` contains manga chapters, EPUB books, PDFs, and other offline content.
 - `local` is retained for local-source compatibility; ordinary Komga downloads are not stored there.
 
+This compatibility `local` directory is different from a local library added through **Use local folder**.
+A configured local library reads the original folders you authorize directly.
+
 Characters that are invalid for the device file system are safely replaced in server, series, and chapter names.
 An offline item may be an EPUB, PDF, archive, or a chapter directory containing images.
 Use the download state shown in Koharia instead of relying on a particular file extension to determine whether an item is complete.
@@ -56,6 +61,14 @@ Server management offers two directory modes:
 
 Change the mode from Koharia's server management screen.
 Do not manually merge server directories in a file manager, because the download index may no longer match the correct Komga content.
+
+## Local-library folders
+
+Local-library folders are selected separately while creating a local-library connection and may be on internal storage or an SD-card location supported by Android's file picker.
+Linking an existing folder does not move or delete files; when Koharia creates a library, it creates the relevant `Comics`, `Books`, and `.koharia` folders in the selected location.
+
+If Android revokes access or the storage medium is removed, the local library cannot refresh or open its files.
+Grant access to the same folder again, and do not treat local-library folders as Komga download directories when migrating storage or rebuilding the download index.
 
 ## Downloads and temporary caches
 

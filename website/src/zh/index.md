@@ -1,12 +1,12 @@
 ---
 layout: home
 title: Koharia
-description: 面向 Komga 服务器的 Android 阅读器。
+description: 面向 Komga 与本地媒体库的 Android 漫画和书籍阅读器。
 
 hero:
   name: Koharia
-  text: 为你的 Komga 服务器而生
-  tagline: 在 Android 上浏览、阅读和离线保存你的 Komga 媒体库，并同步阅读进度。
+  text: 连接 Komga，也读本地书库
+  tagline: 在 Android 上统一浏览和阅读漫画、PDF 与多种电子书格式。
   image:
     alt: Koharia 应用图标
     light: /img/koharia-logo.png
@@ -20,12 +20,12 @@ hero:
       link: /zh/docs/getting-started/initial-setup
 
 features:
-  - title: Komga 优先
-    details: 连接你自己的 Komga 服务器，在一个熟悉的 Android 阅读器中管理媒体库。
-  - title: 离线阅读
-    details: 缓存和下载内容，在网络不稳定或离线时继续阅读。
-  - title: 阅读进度同步
-    details: 将阅读进度与 Komga 同步，在设备和服务器之间保持连续。
-  - title: EPUB 支持
-    details: 为 Komga 中的 EPUB 内容提供适合阅读的体验。
+  - title: Komga 与本地库
+    details: 连接一个或多个 Komga 服务器，也可关联设备上的现有目录或创建新的书库目录。
+  - title: 漫画与书籍
+    details: 在同一个应用中管理漫画和书籍，并为图片内容与可重排文本提供对应的阅读体验。
+  - title: 丰富的本地格式
+    details: 阅读漫画压缩包、图片目录、EPUB、PDF、TXT、MOBI 与 DjVu 等本地内容。
+  - title: 进度与离线访问
+    details: 同步 Komga 阅读进度，保存本地阅读状态，并通过下载或缓存应对离线场景。
 ---

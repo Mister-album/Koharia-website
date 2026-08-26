@@ -19,6 +19,6 @@ import ReleaseDate from '@theme/components/ReleaseDate.vue'
 
 <DownloadButtons />
 
-Koharia 需要 Android 8.0 或更高版本，并需要访问你自行配置的 Komga 服务器。
+Koharia 需要 Android 8.0 或更高版本，可连接你自行配置的 Komga 服务器，也可直接使用设备上的本地媒体库。
 
 <Changelog />

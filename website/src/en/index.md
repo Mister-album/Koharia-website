@@ -1,12 +1,12 @@
 ---
 layout: home
 title: Koharia
-description: An Android reader built for your Komga server.
+description: An Android comics and books reader for Komga and local media libraries.
 
 hero:
   name: Koharia
-  text: Built for your Komga server
-  tagline: Browse, read, download, and sync your Komga library on Android.
+  text: Connect Komga. Read local libraries.
+  tagline: Browse and read comics, PDFs, and reflowable books together on Android.
   image:
     alt: Koharia app icon
     light: /img/koharia-logo.png
@@ -20,12 +20,12 @@ hero:
       link: /en/docs/getting-started/initial-setup
 
 features:
-  - title: Komga first
-    details: Connect your own Komga server and manage its libraries in a familiar Android reader.
-  - title: Offline reading
-    details: Cache and download content to keep reading without a reliable connection.
-  - title: Progress sync
-    details: Keep reading progress in sync between Koharia and Komga.
-  - title: EPUB support
-    details: Read EPUB content from your Komga server in a dedicated reader.
+  - title: Komga and local libraries
+    details: Connect one or more Komga servers, link folders already on your device, or let Koharia create library folders.
+  - title: Comics and books
+    details: Manage comics and books in one app, with dedicated experiences for image-based and reflowable content.
+  - title: Broad local format support
+    details: Read comic archives, image folders, EPUB, PDF, TXT, MOBI, DjVu, and other supported local content.
+  - title: Progress and offline access
+    details: Sync Komga progress, retain local reading state, and use downloads or caches when you are offline.
 ---

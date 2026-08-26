@@ -1,35 +1,46 @@
 ---
 title: Initial setup
-description: Complete first-time setup after installing Koharia.
+description: Choose Komga or a local library and complete first-time setup.
 ---
 
 # Initial setup
 
-After installing Koharia, complete first-time setup in this order.
+After installing Koharia, you can add a Komga server, use local folders, or configure both kinds of content source.
 
-## 1. Confirm the requirements
+## 1. Confirm the system requirement
 
-Koharia requires Android 8.0 or later, and your device must be able to reach your Komga server.
+Koharia requires Android 8.0 or later.
 
-Have the server address plus a username and password or API key ready for sign-in.
+For Komga, have a server address that your device can reach plus a username and password or API key.
+For a local library, make sure your files are in a location that you can grant through Android's system file picker.
 
-## 2. Open Koharia
+## 2. Choose a content source
 
-When you open the app for the first time, follow the on-screen flow to add a server.
-If you skipped it, add one later from the server management entry in the app.
+When you first open the app, choose where your content is stored:
 
-## 3. Check your libraries
+- **Add server:** Connect your own Komga server.
+- **Use local folder:** Create a local-library connection, then link existing folders or let Koharia create library folders.
 
-After connecting, verify that the app displays only the libraries your current Komga account can access.
-Koharia can classify server libraries as comics or books so you can enter the appropriate reading experience.
+Both connection types can coexist, and you can add another connection later from connection management.
 
-## 4. Adjust settings as needed
+## 3. Complete the matching setup
+
+- For Komga, follow [Add a Komga server](/en/docs/getting-started/add-server) to enter the address and authentication details.
+- For files on the device, follow [Add a local library](/en/docs/getting-started/add-local-library) to choose the library organization, folders, and metadata storage.
+
+## 4. Check your libraries
+
+After setup, verify that the shelf shows the expected content.
+Komga displays only libraries available to the current account; a local library completes an initial scan and can be reindexed later with pull to refresh.
+
+## 5. Adjust settings as needed
 
 Before you begin reading, adjust library display, reader, and download options in Settings.
-Choose an appropriate download location first, and use Wi-Fi or charging for large downloads when possible.
+If you plan to download a large amount from Komga, choose an appropriate download location first and use Wi-Fi or charging when possible.
 
 ## Continue with
 
-- [Add a server](/en/docs/getting-started/add-server)
+- [Add a Komga server](/en/docs/getting-started/add-server)
+- [Add a local library](/en/docs/getting-started/add-local-library)
 - [Set up the library](/en/docs/settings/library)
 - [Configure downloads](/en/docs/settings/downloads)

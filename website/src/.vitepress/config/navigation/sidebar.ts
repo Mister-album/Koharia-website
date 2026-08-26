@@ -17,7 +17,8 @@ export function createSidebar(locale: 'zh' | 'en'): DefaultTheme.SidebarMulti {
       items: [
         { text: isChinese ? '下载' : 'Download', link: `${prefix}/download/` },
         { text: isChinese ? '初始化设置' : 'Initial setup', link: `${prefix}/docs/getting-started/initial-setup` },
-        { text: isChinese ? '添加服务器' : 'Add a server', link: `${prefix}/docs/getting-started/add-server` },
+        { text: isChinese ? '添加 Komga 服务器' : 'Add a Komga server', link: `${prefix}/docs/getting-started/add-server` },
+        { text: isChinese ? '添加本地库' : 'Add a local library', link: `${prefix}/docs/getting-started/add-local-library` },
       ],
     },
     {

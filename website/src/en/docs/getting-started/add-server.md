@@ -1,9 +1,9 @@
 ---
-title: Add a server
+title: Add a Komga server
 description: Connect Koharia to your Komga server.
 ---
 
-# Add a server
+# Add a Komga server
 
 Enter your Komga server details in Koharia's Add server screen and verify the connection.
 
@@ -28,3 +28,5 @@ Enter your Komga server details in Koharia's Add server screen and verify the co
 - Use a dedicated Komga account or permission scope instead of granting unnecessary administration permissions to a mobile account.
 
 If the connection fails, see [Troubleshooting](/en/docs/guides/troubleshooting/).
+
+If your content is stored on the Android device or an SD card, [add a local library](/en/docs/getting-started/add-local-library) instead.

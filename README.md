@@ -1,6 +1,6 @@
 # Koharia Website
 
-The official bilingual website for [Koharia](https://github.com/Mister-album/Koharia), an Android reader built for Komga servers.
+The official bilingual website for [Koharia](https://github.com/Mister-album/Koharia), an Android comics and books reader for Komga and local media libraries.
 
 The production site publishes Chinese content under `/zh/` and English content under `/en/`.
 

@@ -3,8 +3,8 @@ import type { HeadConfig } from 'vitepress'
 export function createHeadConfig(locale: 'zh' | 'en'): HeadConfig[] {
   const isChinese = locale === 'zh'
   const description = isChinese
-    ? '面向 Komga 服务器的 Android 阅读器。'
-    : 'An Android reader built for your Komga server.'
+    ? '面向 Komga 与本地媒体库的 Android 漫画和书籍阅读器。'
+    : 'An Android comics and books reader for Komga and local media libraries.'
 
   return [
     ['meta', { name: 'theme-color', content: '#0058A0' }],

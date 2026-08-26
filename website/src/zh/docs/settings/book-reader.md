@@ -1,11 +1,12 @@
 ---
 title: 书籍阅读器
-description: 调整 Koharia 中 EPUB 书籍的阅读体验。
+description: 调整 Koharia 中 EPUB、TXT 与实验性 Mobipocket / Kindle 文本的阅读体验。
 ---
 
 # 书籍阅读器
 
-书籍阅读器用于阅读 Komga 中的 EPUB 内容。
+书籍阅读器用于阅读 Komga 或本地库中的可重排书籍内容。
+完整支持 EPUB；本地 TXT 可识别常见编码，MOBI、PRC、AZW 和 AZW3 提供实验性纯文本与基础元数据支持。
 
 ## 排版与外观
 
@@ -14,12 +15,12 @@ description: 调整 Koharia 中 EPUB 书籍的阅读体验。
 
 ## 进度与内容导航
 
-书籍阅读器支持阅读进度同步、目录和书签等阅读辅助功能。
-进度同步需要设备能够连接到相应的 Komga 服务器。
+书籍阅读器支持分页或连续滚动，并提供排版、目录、书签、全文搜索和进度等阅读辅助功能；部分能力取决于文件格式。
+Komga 内容可与相应服务器同步支持的阅读进度，本地内容的阅读位置和书签保存在设备上。
 
 ## 缓存
 
-EPUB 内容可根据应用设置使用本地缓存。
+Komga 中的 EPUB 内容可根据应用设置使用书籍缓存。
 缓存有助于减少重复读取和网络依赖，但也会占用设备存储空间。
 
-如果需要离线保存内容，请同时查看[下载设置](/zh/docs/settings/downloads)。
+如果需要离线保存 Komga 内容，请同时查看[下载设置](/zh/docs/settings/downloads)。

@@ -1,9 +1,9 @@
 ---
-title: 添加服务器
+title: 添加 Komga 服务器
 description: 将 Koharia 连接到你的 Komga 服务器。
 ---
 
-# 添加服务器
+# 添加 Komga 服务器
 
 在 Koharia 的添加服务器界面，填写你的 Komga 服务器信息并完成验证。
 
@@ -28,3 +28,5 @@ description: 将 Koharia 连接到你的 Komga 服务器。
 - 请使用独立的 Komga 账户或权限范围，避免为移动端账户赋予不必要的管理权限。
 
 连接失败时，请阅读[故障排查](/zh/docs/guides/troubleshooting/)。
+
+如果内容保存在 Android 设备或 SD 卡上，请改为[添加本地库](/zh/docs/getting-started/add-local-library)。
